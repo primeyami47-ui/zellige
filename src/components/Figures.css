@@ -1,28 +1,19 @@
-/* Chiffres clés : quatre arcs de couleur, un grand chiffre en serif chacun. */
+/* Les chiffres de l'atelier : un registre, des lignes à points de conduite,
+   le nombre en grand à une extrémité et son sens à l'autre. */
 
-.figs {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(.8rem, 1.6vw, 1.2rem);
-  margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
-}
+.figs { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line-2); }
 .figs__item {
-  display: flex; flex-direction: column-reverse; justify-content: space-between; gap: 1.5rem;
-  min-height: clamp(12rem, 20vw, 15.5rem);
-  padding: clamp(2.2rem, 4vw, 3.2rem) clamp(1.1rem, 2.2vw, 1.6rem) clamp(1.1rem, 2.2vw, 1.5rem);
-  background: var(--tile, var(--indigo)); color: var(--tile-fg, #fff);
-  border-radius: 50% 50% var(--r-lg) var(--r-lg) / 5.5rem 5.5rem var(--r-lg) var(--r-lg);
-  transition: transform .6s var(--spring);
+  display: flex; flex-direction: row-reverse; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding-block: 1rem; border-bottom: 1px solid var(--line-2);
 }
-.figs__item:hover { transform: translateY(-5px); }
-.figs__item:nth-child(2) { --tile: var(--terra); }
-.figs__item:nth-child(3) { --tile: var(--ochre); --tile-fg: var(--ink); }
-.figs__item:nth-child(4) { --tile: var(--azure); --tile-fg: var(--ink); }
-
 .figs__value {
-  margin: 0; font-family: var(--display);
-  font-size: clamp(4.2rem, 8vw, 7rem); line-height: .8; letter-spacing: -.03em;
-  color: inherit; white-space: nowrap; text-align: center;
+  margin: 0; flex-shrink: 0; font-family: var(--display); font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 1; color: var(--terra);
+  font-variant-numeric: lining-nums tabular-nums;
 }
-.figs__label { font-size: .9375rem; font-weight: 500; line-height: 1.35; color: inherit; max-width: 20ch; }
-
-@media (max-width: 900px) { .figs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .figs__item { transition: none; } }
+.figs__item:nth-child(even) .figs__value { color: var(--indigo); }
+.figs__label {
+  flex: 1; display: flex; align-items: baseline; gap: .8rem; font-size: 1rem; color: var(--body); line-height: 1.35;
+}
+/* Points de conduite entre le sens et le nombre. */
+.figs__label::after { content: ""; flex: 1; min-width: 1.5rem; border-bottom: 2px dotted var(--line-2); transform: translateY(-.3em); }
+@media (max-width: 560px) { .figs__label::after { display: none; } .figs__item { gap: .7rem; } }

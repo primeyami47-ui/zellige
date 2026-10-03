@@ -30,7 +30,7 @@
 @media (max-width: 900px) {
   .zhero__in { grid-template-columns: minmax(0, 1fr); }
   /* Téléphone : la rosace passe devant, grande et coupée par le bord droit. */
-  .zhero__art { order: -1; width: 118%; max-width: 30rem; justify-self: end; margin: -.5rem -26% -1rem 0; }
+  .zhero__art { order: -1; width: 118%; max-width: 30rem; justify-self: end; margin-block: -.5rem -1rem; margin-inline-end: -26%; }
   .zhero__h { font-size: clamp(3.3rem, 15vw, 5rem); }
   .zhero__cta .btn { flex: 1 1 auto; }
 }
@@ -95,3 +95,70 @@
 @media (max-width: 860px) { .zquotes { grid-template-columns: 1fr; } }
 
 @media (prefers-reduced-motion: reduce) { .zhero__h .ln > span { animation: none; } }
+
+/* ============================================================ avant · après == */
+
+.zrestore { background: var(--surface); border-block: 1px solid var(--line); }
+.zrestore__in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+.zrestore__text .t-lead { margin-block: .9rem 1.8rem; max-width: 32rem; }
+.zrestore__ledger { margin: 0 0 .6rem; font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 900px) { .zrestore__in { grid-template-columns: minmax(0, 1fr); } }
+
+.cmp { position: relative; --v: 52%; }
+.cmp__stage {
+  position: relative; overflow: hidden; aspect-ratio: 4 / 3.1; isolation: isolate;
+  border-radius: 40% 40% 1rem 1rem / 22% 22% 1rem 1rem; background: #2a1f14; box-shadow: var(--shadow-lg);
+}
+.cmp__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* « Avant » : le même cliché, vieilli : ternie, désaturée, poussiéreuse. */
+.cmp__before { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--v)) 0 0); }
+[dir="rtl"] .cmp__before { clip-path: inset(0 0 0 calc(100% - var(--v))); }
+.cmp__img--aged { filter: grayscale(.8) sepia(.55) contrast(.74) brightness(.62) blur(.5px); }
+.cmp__dust {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgba(36, 22, 8, .65) 100%),
+    repeating-linear-gradient(115deg, transparent 0 46px, rgba(255, 244, 220, .07) 46px 47px, transparent 47px 130px),
+    repeating-linear-gradient(28deg, transparent 0 71px, rgba(20, 10, 0, .18) 71px 72px, transparent 72px 160px),
+    radial-gradient(circle at 20% 30%, rgba(255, 244, 220, .12) 0 2px, transparent 3px) 0 0 / 53px 47px,
+    radial-gradient(circle at 70% 60%, rgba(255, 244, 220, .1) 0 1.5px, transparent 2.5px) 0 0 / 71px 61px;
+  mix-blend-mode: multiply;
+}
+.cmp__handle {
+  position: absolute; top: 0; bottom: 0; inset-inline-start: var(--v); width: 3px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .15); transform: translateX(-50%); pointer-events: none;
+}
+[dir="rtl"] .cmp__handle { transform: translateX(50%); }
+.cmp__handle i {
+  position: absolute; top: 50%; left: 50%; width: 3rem; height: 3rem; margin: -1.5rem 0 0 -1.5rem; border-radius: 50%;
+  background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
+}
+.cmp__handle i::before, .cmp__handle i::after {
+  content: ""; position: absolute; top: 50%; width: .5rem; height: .5rem; margin-top: -.25rem; border: solid var(--indigo); border-width: 0 0 2px 2px;
+}
+.cmp__handle i::before { left: .85rem; transform: rotate(45deg); }
+.cmp__handle i::after { right: .85rem; transform: rotate(-135deg); }
+.cmp__tag {
+  position: absolute; bottom: 1.1rem; z-index: 2; padding: .3rem .85rem; border-radius: 999px;
+  font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: rgba(255, 252, 247, .92); color: var(--ink);
+}
+.cmp__tag--before { inset-inline-start: 1.2rem; }
+.cmp__tag--after { inset-inline-end: 1.2rem; }
+/* Le curseur natif couvre toute la scène : on glisse n'importe où ; il reste
+   un vrai champ, donc utilisable au clavier et par un lecteur d'écran. */
+.cmp__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.cmp__range:focus-visible + * { outline: 3px solid var(--indigo); }
+.cmp:has(.cmp__range:focus-visible) .cmp__handle i { outline: 3px solid var(--indigo); outline-offset: 3px; }
+
+/* ================================================== le planificateur de projet == */
+
+.plan { display: grid; gap: 1.2rem; }
+.plan__q { margin: 0; font-family: var(--display); font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1.05; }
+.plan__chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+.plan__out { display: grid; gap: .8rem; padding: 1.1rem 1.2rem; border-radius: 1.1rem; background: var(--surface); border: 1px solid var(--line); animation: plan-in .5s var(--ease) both; }
+@keyframes plan-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.plan__out p { margin: 0; display: grid; gap: .15rem; }
+.plan__out span { font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.plan__out strong { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.15; color: var(--indigo); }
+.plan__out .btn { justify-self: start; margin-top: .3rem; }
+@media (prefers-reduced-motion: reduce) { .plan__out { animation: none; } }

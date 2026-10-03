@@ -31,16 +31,26 @@
   -webkit-mask: var(--arch) center / 100% 100% no-repeat; mask: var(--arch) center / 100% 100% no-repeat;
 }
 .arch__img { position: absolute; inset: 0; }
-.arch__panel { display: block; width: 100%; height: 100%; transition: transform 1.6s var(--ease); }
-/* Au survol, le panneau tourne d'un seizième de tour : le motif bouge
-   sans perdre sa géométrie. */
-.arch__in:hover .arch__panel { transform: scale(1.18) rotate(22.5deg); }
+.arch__img img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1.2s var(--ease), filter .6s var(--ease);
+}
+/* Au repos, la photo est teintée dans la couleur de l'arc ; au survol (ou
+   au clavier), elle retrouve ses vraies couleurs et s'avance un peu. */
+.arch__img::after { transition: opacity .6s var(--ease); }
+.arch__in:is(:hover, :focus-visible) .arch__img img { filter: none; mix-blend-mode: normal; transform: scale(1.06); }
+.arch__in:is(:hover, :focus-visible) .arch__img::after { opacity: 0; }
+/* Téléphone : pas de survol, les photos restent en couleurs. */
+@media (hover: none) {
+  .arch__img img { filter: none; mix-blend-mode: normal; }
+  .arch__img::after { opacity: 0; }
+}
 .arch__frame::before {
   content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background: linear-gradient(to top, rgba(20, 16, 12, .55), transparent 45%);
 }
 .arch__n {
-  position: absolute; left: 1rem; bottom: .8rem; z-index: 4;
+  position: absolute; inset-inline-start: 1rem; bottom: .8rem; z-index: 4;
   font-family: var(--display); font-style: italic; font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1; color: #fff;
 }
 .arch__title { font-family: var(--display); font-size: clamp(1.45rem, 2vw, 1.75rem); line-height: 1.05; color: var(--ink); margin-top: .3rem; }
@@ -121,4 +131,6 @@
   .rz.is-live .rz__t, .rz.is-live .rz__core, .rz.is-live .rz__tick { animation: none; }
   .rz__spin { transform: none; }
   .bd__layer, .bd__line polygon, .bd__fill polygon, .bd__seal, .bd__seal path, .ws__step { transition: none; }
+  /* Sans animation, toutes les étapes restent lisibles. */
+  .ws__step { opacity: 1; }
 }

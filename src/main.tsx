@@ -6,6 +6,12 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import '@fontsource/instrument-serif/400.css'
 import '@fontsource/instrument-serif/400-italic.css'
 import '@fontsource-variable/instrument-sans'
+// Arabe : Amiri, un naskhi de tradition, pour les titres (avec son
+// italique) ; Noto Naskh pour le texte.
+import '@fontsource/amiri/400.css'
+import '@fontsource/amiri/400-italic.css'
+import '@fontsource/amiri/700.css'
+import '@fontsource-variable/noto-naskh-arabic'
 import 'lenis/dist/lenis.css'
 import './styles/tokens.css'
 import App from './App'

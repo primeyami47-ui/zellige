@@ -297,3 +297,24 @@ button.link { border: 0; padding: 0 0 .15rem; font-family: inherit; cursor: poin
   .in .tick path, .tick--draw path, .close::after { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* ================================================================ arabe == */
+/* La version arabe (/ar) se lit de droite à gauche : la mise en page suit
+   (flex et grilles s'inversent seules), ces règles couvrent le reste. */
+
+:root:lang(ar) {
+  --display: 'Amiri', 'Noto Naskh Arabic Variable', serif;
+  --font:    'Noto Naskh Arabic Variable', 'Noto Naskh Arabic', serif;
+}
+/* L'arabe est une écriture liée : aucun interlettrage. */
+:lang(ar) { letter-spacing: 0 !important; }
+/* Le naskhi a des hampes et des points hauts : plus d'interligne. */
+:lang(ar) :is(h1, h2, h3, .t-h2, .t-h3, .zdiag__h, .ftr__line, .menu__link, .zdiag__q, .zquote blockquote) { line-height: 1.45; }
+:lang(ar) .zhero__h { line-height: 1.25; }
+:lang(ar) body { line-height: 1.85; }
+
+/* Les flèches pointent dans le sens de lecture. */
+[dir="rtl"] .arrow { transform: scaleX(-1); }
+[dir="rtl"] :is(.btn, .link, .arch__in):hover .arrow { transform: scaleX(-1) translateX(4px); }
+[dir="rtl"] .btn::before { clip-path: circle(0% at 0% 50%); }
+[dir="rtl"] .btn:hover::before { clip-path: circle(150% at 0% 50%); }

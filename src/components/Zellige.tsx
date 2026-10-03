@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { crafts, phases } from '../data/site'
+import { useContent } from '../content'
 import { Arrow } from './Reveal'
 import './Zellige.css'
 
@@ -54,6 +54,7 @@ function tiles(): Tile[] {
 const TILES = tiles()
 
 export function Rosette() {
+  const label = useContent().ui.rosette
   const ref = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export function Rosette() {
 
   return (
     <svg ref={ref} className="rz" viewBox="-260 -260 520 520" role="img"
-         aria-label="Une rosace de zellige : des dizaines de pièces assemblées autour d'une coche">
+         aria-label={label}>
       <circle r="254" className="rz__ring" />
       <g className="rz__spin">
         {TILES.map((t) => (
@@ -90,9 +91,9 @@ export function Rosette() {
 }
 
 /* ============================================================== arcade ===
-   Cinq arcs, un savoir-faire chacun, et dans chaque arc un panneau de
-   zellige dessiné dans ses couleurs. Sur téléphone, on les fait glisser du
-   pouce. */
+   Cinq arcs, un savoir-faire chacun, et dans chaque arc sa photo, teintée
+   dans la couleur de l'arc au repos et rendue à ses couleurs au survol.
+   Sur téléphone, on les fait glisser du pouce. */
 
 const ARCH_TONES: Record<string, [string, string]> = {
   riad:      ['var(--azure)', 'var(--indigo)'],
@@ -102,39 +103,21 @@ const ARCH_TONES: Record<string, [string, string]> = {
   interieur: ['#F1D9C9', '#6A2A18'],
 }
 
-/** Un panneau de zellige : étoiles à huit branches sur fond clair, avec un
-    motif différent (taille, rotation, losanges) pour chaque arc. */
-function Panel({ i, a, b }: { i: number; a: string; b: string }) {
-  const size = [60, 46, 74, 52, 64][i % 5]
-  const rot = i % 2 ? 22.5 : 0
-  const cols = Math.ceil(240 / size) + 1, rows = Math.ceil(300 / size) + 1
-  const cells = Array.from({ length: cols * rows }, (_, k) => [k % cols, Math.floor(k / cols)] as const)
-  return (
-    <svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMid slice" className="arch__panel">
-      <rect width="240" height="300" fill={a} />
-      {cells.map(([c, r]) => (
-        <polygon key={`s${c}-${r}`} points={star(size * 0.42, c * size, r * size, rot)} fill={b} />
-      ))}
-      {cells.map(([c, r]) => (
-        <polygon key={`d${c}-${r}`} fill={a} opacity=".9"
-                 points={poly([[c * size + size / 2, r * size + size / 2 - size * 0.16], [c * size + size / 2 + size * 0.16, r * size + size / 2],
-                               [c * size + size / 2, r * size + size / 2 + size * 0.16], [c * size + size / 2 - size * 0.16, r * size + size / 2]])} />
-      ))}
-      {cells.map(([c, r]) => (
-        <circle key={`c${c}-${r}`} cx={c * size} cy={r * size} r={size * 0.1} fill={a} />
-      ))}
-    </svg>
-  )
+/* Les photos des arcs (Unsplash, voir le README), à leur taille réelle. */
+const PHOTOS: Record<string, [number, number]> = {
+  riad: [720, 1080], zellige: [720, 960], tadelakt: [720, 900], bois: [720, 1177], interieur: [720, 480],
 }
 
 export function Arcade() {
+  const t = useContent().crafts
+  const crafts = t.list
   const track = useRef<HTMLUListElement>(null)
   const [seen, setSeen] = useState(0)
   const onScroll = () => {
     const el = track.current
     if (!el) return
     const w = (el.firstElementChild as HTMLElement | null)?.offsetWidth ?? 1
-    setSeen(Math.min(crafts.length - 1, Math.round(el.scrollLeft / w)))
+    setSeen(Math.min(crafts.length - 1, Math.round(Math.abs(el.scrollLeft) / w)))
   }
 
   return (
@@ -146,12 +129,15 @@ export function Arcade() {
             <li key={e.id} className="arch" style={{ '--i': i, '--duo-a': a, '--duo-b': b } as CSSProperties}>
               <a href="#contact" className="arch__in">
                 <span className="arch__frame">
-                  <span className="arch__img" aria-hidden="true"><Panel i={i} a={a} b={b} /></span>
+                  <span className="arch__img duo">
+                    <img src={`${import.meta.env.BASE_URL}img/${e.id}.webp`} alt={e.alt}
+                         width={PHOTOS[e.id][0]} height={PHOTOS[e.id][1]} loading="lazy" />
+                  </span>
                   <span className="arch__n">{e.n}</span>
                 </span>
                 <span className="arch__title">{e.title}</span>
                 <span className="arch__short">{e.short}</span>
-                <span className="arch__go">En parler <Arrow /></span>
+                <span className="arch__go">{t.go} <Arrow /></span>
               </a>
             </li>
           )
@@ -159,7 +145,7 @@ export function Arcade() {
       </ul>
       <p className="arcade__hint" aria-hidden="true">
         <span className="t-num">{String(seen + 1).padStart(2, '0')} / 0{crafts.length}</span>
-        <span>Glissez pour voir les cinq savoir-faire</span>
+        <span>{t.swipe}</span>
       </p>
     </div>
   )
@@ -209,6 +195,7 @@ function Build({ step }: { step: number }) {
 }
 
 export function Workshop() {
+  const { phases, receive } = useContent().method
   const [step, setStep] = useState(0)
   const list = useRef<HTMLOListElement>(null)
 
@@ -238,11 +225,65 @@ export function Workshop() {
             <p className="ws__label">{ph.label}</p>
             <h3 className="t-h3">{ph.title}</h3>
             <p className="ws__body">{ph.body}</p>
-            <p className="ws__deliv"><span>Vous recevez</span>{ph.deliverable}</p>
+            <p className="ws__deliv"><span>{receive}</span>{ph.deliverable}</p>
             <span className="ws__weeks">{ph.duration}</span>
           </li>
         ))}
       </ol>
+    </div>
+  )
+}
+
+/* ============================================================ avant · après ===
+   La même pièce, abîmée à gauche et restaurée à droite. La photo est la
+   même : le « avant » est un effet (désaturée, ternie, poussiéreuse), pas un
+   vrai chantier. Une poignée à glisser, au doigt comme au clavier. */
+
+export function Compare() {
+  const t = useContent().restore
+  const [v, setV] = useState(52)
+  return (
+    <div className="cmp" style={{ '--v': `${v}%` } as CSSProperties}>
+      <div className="cmp__stage">
+        <img className="cmp__img" src={`${import.meta.env.BASE_URL}img/interieur.webp`} alt={t.alt} width={720} height={480} loading="lazy" />
+        <div className="cmp__before" aria-hidden="true">
+          <img className="cmp__img cmp__img--aged" src={`${import.meta.env.BASE_URL}img/interieur.webp`} alt="" width={720} height={480} loading="lazy" />
+          <span className="cmp__dust" />
+        </div>
+        <span className="cmp__handle" aria-hidden="true"><i /></span>
+        <span className="cmp__tag cmp__tag--before" aria-hidden="true">{t.before}</span>
+        <span className="cmp__tag cmp__tag--after" aria-hidden="true">{t.after}</span>
+      </div>
+      <input className="cmp__range" type="range" min={0} max={100} value={v} aria-label={t.slider}
+             onChange={(e) => setV(Number(e.target.value))} />
+    </div>
+  )
+}
+
+/* ================================================================ projet ===
+   Le planificateur : on choisit son projet, l'atelier répond (durée, premier
+   geste) et propose une visite. */
+
+export function Planner() {
+  const t = useContent().planner
+  const [i, setI] = useState<number | null>(null)
+  const c = i === null ? null : t.choices[i]
+  return (
+    <div className="plan">
+      <p className="plan__q">{t.question}</p>
+      <div className="plan__chips" role="radiogroup" aria-label={t.question}>
+        {t.choices.map((ch, k) => (
+          <button key={ch.label} type="button" role="radio" aria-checked={i === k}
+                  className={`chip${i === k ? ' is-on' : ''}`} onClick={() => setI(k)}>{ch.label}</button>
+        ))}
+      </div>
+      {c && (
+        <div className="plan__out" key={i}>
+          <p><span>{t.durationLabel}</span><strong>{c.duration}</strong></p>
+          <p><span>{t.firstLabel}</span><strong>{c.first}</strong></p>
+          <a href="#contact" className="btn btn--primary">{t.cta} <Arrow /></a>
+        </div>
+      )}
     </div>
   )
 }

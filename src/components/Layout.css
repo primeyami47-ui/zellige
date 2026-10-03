@@ -30,7 +30,7 @@
 .hdr--open .zlogo { color: #fff !important; }
 
 .hdr__in { display: flex; align-items: center; gap: 1.5rem; min-height: 5rem; }
-.hdr__brand { display: flex; text-decoration: none; margin-right: auto; }
+.hdr__brand { display: flex; text-decoration: none; margin-inline-end: auto; }
 
 .hdr__nav { display: flex; align-items: center; gap: .4rem; }
 .hdr__link {
@@ -108,11 +108,13 @@ html.menu-open { overflow: hidden; }
 /* --------------------------------------------------------------- skip --- */
 
 .skip {
-  position: absolute; left: -9999px; top: 0; z-index: 100;
+  /* Caché au-dessus de l'écran plutôt qu'à gauche : en arabe, un élément
+     hors champ à gauche élargirait la page. */
+  position: absolute; inset-inline-start: 1rem; top: 0; z-index: 100; transform: translateY(-120%);
   background: var(--ink); color: #fff; padding: .85rem 1.4rem;
   font-size: .875rem; text-decoration: none;
 }
-.skip:focus { left: 0; }
+.skip:focus { transform: none; }
 
 /* ------------------------------------------------------------- footer --- */
 
@@ -164,3 +166,21 @@ html.menu-open { overflow: hidden; }
 
 /* Mention de vitrine : marque inventée, site de démonstration. */
 .ftr__demo { opacity: .8; }
+
+[dir="rtl"] .menu__star { right: auto; left: -9rem; }
+
+/* -------------------------------------------------------------- langues */
+
+.langs { display: flex; gap: .1rem; padding: .2rem; border: 1px solid var(--line); border-radius: 999px; }
+.langs__a {
+  min-width: 2.2rem; height: 2.2rem; padding-inline: .45rem; display: grid; place-items: center;
+  border-radius: 999px; font-size: .8125rem; font-weight: 500; color: var(--ink); text-decoration: none;
+  transition: background-color .25s var(--ease), color .25s var(--ease);
+}
+.langs__a[lang="ar"] { font-family: 'Amiri', serif; font-size: 1.1rem; }
+.langs__a:hover { background: var(--surface); }
+.langs__a[aria-current] { background: var(--indigo); color: #fff; }
+.menu__langs { margin-top: 1.8rem; align-self: flex-start; border-color: rgba(255, 255, 255, .3); }
+.menu__langs .langs__a { color: #fff; min-width: 3rem; height: 3rem; font-size: 1rem; }
+.menu__langs .langs__a[aria-current] { background: #fff; color: var(--indigo); }
+@media (max-width: 960px) { .hdr__langs { display: none; } }

@@ -34,15 +34,15 @@ export function LogoMark({ tone = 'color', size = 40, className = '', draw = fal
 }
 
 /** Étoile + nom : « qaws » en italique, « atelier » en petites capitales. */
-export default function Logo({ tone = 'color', size = 44, className = '', draw = false }: {
-  tone?: LogoTone; size?: number; className?: string; draw?: boolean
+export default function Logo({ tone = 'color', size = 44, className = '', draw = false, sub, word = 'qaws' }: {
+  tone?: LogoTone; size?: number; className?: string; draw?: boolean; sub: string; word?: string
 }) {
   const text = tone === 'reverse' || tone === 'white' ? '#fff' : 'var(--ink)'
   return (
     <span className={`zlogo ${className}`} style={{ color: text }}>
       <LogoMark tone={tone} size={size} draw={draw} />
       <span className="zlogo__word" aria-hidden="true">
-        qaws<small>atelier · Fès</small>
+        {word}<small>{sub}</small>
       </span>
     </span>
   )

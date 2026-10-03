@@ -1,0 +1,166 @@
+/* --------------------------------------------------------------- logo --- */
+
+.zlogo { display: inline-flex; align-items: center; gap: .65rem; line-height: 1; }
+.zlogo__word {
+  font-family: var(--display); font-style: italic;
+  font-size: 2.15rem; letter-spacing: -.02em; line-height: .7;
+}
+.zlogo__word small {
+  display: block; margin-top: .42rem;
+  font-family: var(--font); font-style: normal; font-size: .625rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+}
+.zmark { flex-shrink: 0; overflow: visible; }
+.zmark__star { transform-origin: 32px 32px; transition: transform .8s var(--spring); }
+.hdr__brand:hover .zmark__star { transform: rotate(45deg); }
+.zmark--draw .zmark__star { animation: q-turn 1.2s var(--ease) both; }
+.zmark--draw .zmark__tick { stroke-dasharray: 100; animation: z-draw .7s .7s var(--ease) both; }
+@keyframes q-turn { from { transform: rotate(-135deg) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes z-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+/* ------------------------------------------------------------- header --- */
+
+.hdr {
+  position: sticky; top: 0; z-index: 60;
+  background: rgba(246, 239, 228, .88);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: box-shadow .35s var(--ease), background-color .35s var(--ease);
+}
+.hdr--stuck { box-shadow: 0 1px 0 var(--line); }
+.hdr--open { background: var(--indigo); box-shadow: none; }
+.hdr--open .zlogo { color: #fff !important; }
+
+.hdr__in { display: flex; align-items: center; gap: 1.5rem; min-height: 5rem; }
+.hdr__brand { display: flex; text-decoration: none; margin-right: auto; }
+
+.hdr__nav { display: flex; align-items: center; gap: .4rem; }
+.hdr__link {
+  position: relative; padding: .5rem .85rem;
+  font-size: .9688rem; font-weight: 500; text-decoration: none; color: var(--ink);
+}
+/* Au survol, une petite étoile se pose sous le mot. */
+.hdr__link::after {
+  content: ""; position: absolute; left: 50%; bottom: -.1rem; width: .55rem; height: .55rem; margin-left: -.275rem;
+  background: var(--terra);
+  clip-path: polygon(50% 0%, 61% 24%, 85% 15%, 76% 39%, 100% 50%, 76% 61%, 85% 85%, 61% 76%, 50% 100%, 39% 76%, 15% 85%, 24% 61%, 0% 50%, 24% 39%, 15% 15%, 39% 24%);
+  transform: scale(0) rotate(-90deg); transition: transform .45s var(--spring);
+}
+.hdr__link:hover::after, .hdr__link.is-active::after { transform: none; }
+.hdr__link.is-active { color: var(--terra); }
+
+.hdr__cta { padding: .8rem 1.1rem .8rem 1.25rem; font-size: .9375rem; }
+
+.hdr__burger {
+  display: none;
+  position: relative; width: 3rem; height: 3rem; flex-shrink: 0;
+  border: 0; border-radius: var(--r); cursor: pointer;
+  background: var(--indigo);
+}
+.hdr__burger span {
+  position: absolute; left: 50%; width: 1.25rem; height: 2px; margin-left: -.625rem;
+  background: #fff; transition: transform .4s var(--spring), top .3s var(--ease);
+}
+.hdr__burger span:nth-child(1) { top: calc(50% - 4px); }
+.hdr__burger span:nth-child(2) { top: calc(50% + 3px); }
+.hdr--open .hdr__burger { background: var(--ochre); }
+.hdr--open .hdr__burger span { background: var(--ink); }
+.hdr__burger[aria-expanded="true"] span:nth-child(1) { top: calc(50% - 1px); transform: rotate(45deg); }
+.hdr__burger[aria-expanded="true"] span:nth-child(2) { top: calc(50% - 1px); transform: rotate(-45deg); }
+
+@media (max-width: 960px) {
+  .hdr__nav, .hdr__cta { display: none; }
+  .hdr__burger { display: block; }
+  .hdr__in { min-height: 4.25rem; }
+}
+
+/* ------------------------------------------------------- menu mobile --- */
+
+.menu {
+  position: fixed; inset: 0; z-index: 55; overflow: hidden auto; overscroll-behavior: contain;
+  padding-top: 5.5rem;
+  background: var(--indigo); color: #fff;
+  -webkit-mask: var(--arch) 50% 100% / 100% 0% no-repeat; mask: var(--arch) 50% 100% / 100% 0% no-repeat;
+  visibility: hidden;
+  transition: mask-size .7s var(--ease), -webkit-mask-size .7s var(--ease), visibility 0s .7s;
+}
+/* Le menu s'ouvre comme un arc qui s'élève depuis le bas de l'écran. */
+.menu.is-open { -webkit-mask-size: 180% 180%; mask-size: 180% 180%; visibility: visible; transition: mask-size .8s var(--ease), -webkit-mask-size .8s var(--ease); }
+html.menu-open { overflow: hidden; }
+.menu__star { position: absolute; right: -9rem; bottom: -9rem; opacity: .08; animation: star-spin 90s linear infinite; pointer-events: none; }
+
+.menu__nav { position: relative; display: flex; flex-direction: column; gap: .2rem; padding-block: 1.5rem 3rem; }
+.menu__link {
+  display: flex; align-items: baseline; gap: 1rem;
+  font-family: var(--display); font-style: italic;
+  font-size: clamp(3.2rem, 15vw, 5.5rem); line-height: 1.02;
+  color: #fff; text-decoration: none;
+}
+.menu__n { font-family: var(--font); font-style: normal; font-size: .8rem; font-weight: 600; letter-spacing: .1em; color: var(--ochre); }
+.menu__link.is-active { color: var(--ochre); }
+.menu__cta { align-self: flex-start; margin-top: 2rem; }
+.menu__contact { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; font-weight: 500; }
+.menu__contact a { color: #fff; display: inline-flex; align-items: center; gap: .4rem; }
+.menu__contact .wa { color: #fff; }
+
+.menu__nav > * { opacity: 0; transform: translateY(30px); transition: opacity .5s var(--ease), transform .6s var(--ease); }
+.menu.is-open .menu__nav > * { opacity: 1; transform: none; transition-delay: calc(.2s + var(--i, 0) * .06s); }
+.menu :focus-visible { outline-color: var(--ochre); }
+
+/* --------------------------------------------------------------- skip --- */
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--ink); color: #fff; padding: .85rem 1.4rem;
+  font-size: .875rem; text-decoration: none;
+}
+.skip:focus { left: 0; }
+
+/* ------------------------------------------------------------- footer --- */
+
+.ftr { position: relative; overflow: hidden; background: var(--cobalt-d); color: rgba(255, 255, 255, .74); }
+
+.ftr__top {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem;
+  padding-block: clamp(4rem, 9vw, 7rem) clamp(2.5rem, 5vw, 3.5rem);
+}
+.ftr__line {
+  font-family: var(--display);
+  font-size: clamp(3rem, 8vw, 6.6rem); line-height: .95; letter-spacing: -.02em;
+  color: #fff;
+}
+.ftr__line em { color: var(--ochre); }
+
+.ftr__in {
+  display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(2.5rem, 5vw, 3.5rem) 3rem;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+}
+@media (max-width: 900px) { .ftr__in { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .ftr__in { grid-template-columns: minmax(0, 1fr); } }
+
+.ftr__brand { display: grid; gap: 1.25rem; align-content: start; }
+.ftr__brand p { font-size: .9375rem; line-height: 1.65; max-width: 32ch; }
+
+.ftr__col { display: flex; flex-direction: column; align-items: flex-start; gap: .65rem; }
+.ftr__col h2 {
+  font-family: var(--font); font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ochre); margin: 0 0 .4rem;
+}
+.ftr__col a, .ftr__col span { font-size: .9375rem; line-height: 1.5; color: rgba(255, 255, 255, .78); text-decoration: none; transition: color .2s; }
+.ftr__col a:hover { color: #fff; }
+.ftr__col address { font-style: normal; display: grid; gap: .1rem; font-size: .9375rem; line-height: 1.55; margin-bottom: .35rem; }
+
+.ftr__bar {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;
+  padding-block: 1.4rem 2rem; font-size: .8125rem; color: rgba(255, 255, 255, .64);
+  border-top: 1px solid rgba(255, 255, 255, .15);
+}
+.ftr__legal { display: flex; flex-wrap: wrap; gap: 1.4rem; }
+.ftr__bar a { color: rgba(255, 255, 255, .64); text-decoration: none; }
+.ftr__bar a:hover { color: #fff; }
+.ftr :focus-visible { outline-color: var(--ochre); }
+
+@media (prefers-reduced-motion: reduce) { .menu__star, .zmark--draw .zmark__star, .zmark--draw .zmark__tick { animation: none; } }
+
+/* Mention de vitrine : marque inventée, site de démonstration. */
+.ftr__demo { opacity: .8; }
